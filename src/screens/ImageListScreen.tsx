@@ -6,6 +6,7 @@ import {
   Image,
   Dimensions,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useGetImages} from '../hooks';
@@ -19,10 +20,15 @@ import {ImageFromRequest, monthNames} from '../types';
 
 const ImageListScreen = () => {
   const props = useRoute<RouteProp<NavigationProps>>();
-  const {increase, mutate, page, images} = useGetImages();
+  const {increase, mutate, page, images, error} = useGetImages();
   const [allImages, setAllImages] = useState<ImageFromRequest[]>(
     props.params?.images,
   );
+  useEffect(() => {
+    if (error !== null) {
+      Alert.alert('Request faild');
+    }
+  }, [error]);
   const windowWidth = 0.3 * Dimensions.get('window').width;
   const navigation =
     useNavigation<NativeStackNavigationProp<NavigationProps>>();
@@ -64,33 +70,37 @@ const ImageListScreen = () => {
           <View style={styles.flex} />
         </View>
         <View style={styles.listView}>
-          <FlatList
-            data={allImages}
-            numColumns={3}
-            onEndReached={increase}
-            renderItem={({item}) => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate('ImageDonload', {
-                      id: item.id.toString(),
-                      url: item.img_src,
-                    });
-                  }}>
-                  <View
-                    style={[
-                      styles.fastImageView,
-                      {width: windowWidth, height: windowWidth},
-                    ]}>
-                    <FastImage
-                      style={styles.fastImage}
-                      source={{uri: item.img_src}}
-                    />
-                  </View>
-                </TouchableOpacity>
-              );
-            }}
-          />
+          {allImages[0] !== undefined ? (
+            <FlatList
+              data={allImages}
+              numColumns={3}
+              onEndReached={increase}
+              renderItem={({item}) => {
+                return (
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('ImageDonload', {
+                        id: item.id.toString(),
+                        url: item.img_src,
+                      });
+                    }}>
+                    <View
+                      style={[
+                        styles.fastImageView,
+                        {width: windowWidth, height: windowWidth},
+                      ]}>
+                      <FastImage
+                        style={styles.fastImage}
+                        source={{uri: item.img_src}}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          ) : (
+            <Text style={styles.emptyArrayText}>No photos in this day</Text>
+          )}
         </View>
       </View>
     </SafeAreaView>
@@ -98,6 +108,7 @@ const ImageListScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  emptyArrayText: {fontSize: 24, marginTop: '70%'},
   fastImage: {borderRadius: 8, flex: 1},
   fastImageView: {
     padding: 8,

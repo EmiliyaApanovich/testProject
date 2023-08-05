@@ -24,7 +24,7 @@ const SelectParamsScreen = () => {
   const [date, setDate] = useState(new Date());
   const [isVisibleCalendar, setIsVisibleCalendar] = useState(false);
   const [isVisibleCamera, setIsVisibleCamera] = useState(false);
-  const {isLoading, mutate, page, images} = useGetImages();
+  const {isLoading, mutate, page, images, error} = useGetImages();
   useEffect(() => {
     if (images !== null) {
       console.log('navigate');
@@ -81,6 +81,9 @@ const SelectParamsScreen = () => {
               onPress={navigateToImages}>
               <Text style={styles.text}>Explore</Text>
             </TouchableOpacity>
+            {error !== null && (
+              <Text style={styles.errorText}>Request faild</Text>
+            )}
           </View>
           {isVisibleCalendar && (
             <View style={styles.calendarContainer}>
@@ -230,6 +233,7 @@ const styles = StyleSheet.create({
     paddingLeft: 24,
     paddingRight: 24,
   },
+  errorText: {color: 'red'},
 });
 
 export default SelectParamsScreen;

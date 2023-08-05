@@ -6,6 +6,7 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {NavigationProps} from '../navigation/route';
 import FastImage from 'react-native-fast-image';
+import {checkPermission} from '../function/donload';
 
 const ImageDonloadScreen = () => {
   const props = useRoute<RouteProp<NavigationProps>>();
@@ -22,11 +23,13 @@ const ImageDonloadScreen = () => {
           </TouchableOpacity>
           <View style={styles.flex} />
           <View style={styles.textView}>
-            <Text style={styles.cameraNameText}>Photo ID</Text>
-            <Text style={styles.dateText}>{props.params.id}</Text>
+            <Text style={styles.titleId}>Photo ID</Text>
+            <Text style={styles.idText}>{props.params.id}</Text>
           </View>
           <View style={styles.flex} />
-          <TouchableOpacity style={styles.backButton}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => checkPermission(props.params.url)}>
             <Share stroke={'#ffff'} />
           </TouchableOpacity>
         </View>
@@ -53,15 +56,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   flex: {flex: 1},
-  dateText: {
-    color: 'white',
-    fontSize: 13,
-    fontWeight: '400',
-  },
-  cameraNameText: {
+  idText: {
     color: 'white',
     fontSize: 18,
     fontWeight: '600',
+  },
+  titleId: {
+    color: 'white',
+    fontSize: 13,
+    fontWeight: '400',
   },
   textView: {
     flexDirection: 'column',

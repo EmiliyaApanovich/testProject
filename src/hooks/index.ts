@@ -3,21 +3,25 @@ import {ImageFromRequest, ParamsForRequest} from '../types';
 import {getPhotos} from '../api';
 
 export const useGetImages = () => {
-  const [images, setImages] = useState<ImageFromRequest[]>([]);
+  const [images, setImages] = useState<null | ImageFromRequest[]>(null);
   const [error, setError] = useState<null | string>(null);
-  console.log(images);
   const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
   async function mutate({date, roverCamera}: ParamsForRequest) {
+    console.log('mutate');
     setIsLoading(true);
     try {
-      const response = await getPhotos({date, roverCamera});
-      setImages(response.photos);
+      const response = await getPhotos({date, roverCamera, page});
+      setImages(() => response.photos);
     } catch (e) {
       console.log(e);
       setError(e as string);
     } finally {
-      setIsLoading(true);
+      setIsLoading(false);
     }
   }
-  return {images, error, isLoading, mutate};
+  function increase() {
+    setPage(page + 1);
+  }
+  return {images, error, isLoading, mutate, page, increase};
 };

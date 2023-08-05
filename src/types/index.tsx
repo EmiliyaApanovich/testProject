@@ -1,5 +1,5 @@
 export type ImageFromRequest = {
-  image_src: string;
+  img_src: string;
   id: number;
   earth_date: Date;
   camera: {
@@ -13,6 +13,7 @@ export type ImageFromRequest = {
 export type ParamsForRequest = {
   date: string;
   roverCamera: string;
+  page: number;
 };
 
 export const CamerasArray = [
